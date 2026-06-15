@@ -13,6 +13,12 @@ export interface Glyph {
   alt?: string;
   /** text: the literal characters drawn. */
   text?: string;
+  /**
+   * The letters this glyph contributes, when different from what's drawn —
+   * e.g. drawn "100" reads "сто", drawn "4" reads "four". Defaults to `text`
+   * (text glyph) or `alt` (image glyph), lowercased.
+   */
+  reading?: string;
   dropStart?: number;
   dropEnd?: number;
 }
@@ -36,6 +42,12 @@ export interface StackNode {
   kind: "stack";
   top: Glyph;
   bottom: Glyph;
+  /**
+   * The preposition the vertical arrangement injects between the two groups
+   * (на / над / под / за / по). Stored for verification and the reveal trace;
+   * it is NOT drawn — the solver deduces it from what spells a word.
+   */
+  prep: string;
 }
 
 /** A node in a puzzle's horizontal row. */

@@ -6,5 +6,9 @@ dist/
 # (The manifest in data/ IS committed; the binary SVGs are regenerated via `npm run crawl`.)
 public/assets/images/
 
-# Crawler caches
+# Generated puzzle packs (reproducible via `npm run generate`)
+public/puzzles/
+
+# Tooling caches
 tools/crawler/.cache/
+tools/generator/.cache/

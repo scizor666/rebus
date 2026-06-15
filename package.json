@@ -9,6 +9,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "crawl": "tsx tools/crawler/crawl.ts",
+    "generate": "tsx tools/generator/generate.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

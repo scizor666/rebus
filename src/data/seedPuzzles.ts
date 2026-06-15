@@ -153,7 +153,7 @@ export const seedPuzzles: Puzzle[] = [
     lang: "ru",
     hasImages: false,
     answer: "канал",
-    tokens: [{ kind: "stack", top: txt("КА"), bottom: txt("Л") }],
+    tokens: [{ kind: "stack", top: txt("КА"), bottom: txt("Л"), prep: "на" }],
     trace: "КА над Л, читается «КА на Л» → ка-на-л = канал",
   },
   {
@@ -161,7 +161,7 @@ export const seedPuzzles: Puzzle[] = [
     lang: "ru",
     hasImages: false,
     answer: "банан",
-    tokens: [{ kind: "stack", top: txt("БА"), bottom: txt("Н") }],
+    tokens: [{ kind: "stack", top: txt("БА"), bottom: txt("Н"), prep: "на" }],
     trace: "БА над Н, читается «БА на Н» → ба-на-н = банан",
   },
 ];

@@ -1,6 +1,6 @@
 import type { Lang, Puzzle } from "../rebus/types.ts";
 import { isCorrect } from "../rebus/normalize.ts";
-import { PuzzleSelector } from "../game/select.ts";
+import type { PuzzleSource } from "../game/packSource.ts";
 import { el, renderPuzzle } from "./render.ts";
 
 interface Strings {
@@ -12,6 +12,7 @@ interface Strings {
   correct: string;
   wrong: string;
   answer: string;
+  loading: string;
 }
 
 const STR: Record<Lang, Strings> = {
@@ -24,6 +25,7 @@ const STR: Record<Lang, Strings> = {
     correct: "Верно!",
     wrong: "Не угадали — попробуйте ещё",
     answer: "Ответ",
+    loading: "Загрузка…",
   },
   en: {
     placeholder: "Type your answer…",
@@ -34,6 +36,7 @@ const STR: Record<Lang, Strings> = {
     correct: "Correct!",
     wrong: "Not quite — try again",
     answer: "Answer",
+    loading: "Loading…",
   },
 };
 
@@ -49,11 +52,12 @@ interface Refs {
 
 export class Game {
   private lang: Lang = "ru";
-  private current!: Puzzle;
+  private current?: Puzzle;
   private done = false; // solved or revealed → input locked
+  private roundToken = 0; // guards against out-of-order async loads
 
   constructor(
-    private readonly selector: PuzzleSelector,
+    private readonly source: PuzzleSource,
     private readonly refs: Refs,
   ) {
     refs.form.addEventListener("submit", (e) => {
@@ -64,7 +68,7 @@ export class Game {
       const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-lang]");
       if (btn) this.setLang(btn.dataset.lang as Lang);
     });
-    this.newRound();
+    void this.newRound();
   }
 
   private get t(): Strings {
@@ -74,11 +78,11 @@ export class Game {
   private setLang(lang: Lang): void {
     if (lang === this.lang) return;
     this.lang = lang;
-    this.newRound(); // switching language loads a fresh puzzle immediately
+    void this.newRound(); // switching language loads a fresh puzzle immediately
   }
 
-  private newRound(): void {
-    this.current = this.selector.next(this.lang);
+  private async newRound(): Promise<void> {
+    const token = ++this.roundToken;
     this.done = false;
 
     for (const btn of this.refs.langToggle.querySelectorAll<HTMLElement>(
@@ -87,22 +91,42 @@ export class Game {
       btn.classList.toggle("is-active", btn.dataset.lang === this.lang);
     }
 
-    this.refs.puzzle.replaceChildren(renderPuzzle(this.current));
+    // loading state
     this.refs.feedback.className = "feedback";
     this.refs.feedback.textContent = "";
-
+    this.refs.controls.replaceChildren();
     this.refs.input.value = "";
     this.refs.input.placeholder = this.t.placeholder;
+    this.refs.input.disabled = true;
+    this.refs.submit.disabled = true;
+    this.refs.puzzle.replaceChildren(
+      Object.assign(el("div", "loading"), { textContent: this.t.loading }),
+    );
+
+    let puzzle: Puzzle;
+    try {
+      puzzle = await this.source.next(this.lang);
+    } catch (err) {
+      if (token !== this.roundToken) return;
+      this.refs.puzzle.replaceChildren(
+        Object.assign(el("div", "loading"), { textContent: "⚠︎" }),
+      );
+      console.error(err);
+      return;
+    }
+    if (token !== this.roundToken) return; // a newer round superseded this one
+
+    this.current = puzzle;
+    this.refs.puzzle.replaceChildren(renderPuzzle(puzzle));
     this.refs.input.disabled = false;
     this.refs.submit.disabled = false;
     this.refs.submit.textContent = this.t.check;
     this.refs.input.focus();
-
     this.renderControls();
   }
 
   private onSubmit(): void {
-    if (this.done) return;
+    if (this.done || !this.current) return;
     if (isCorrect(this.refs.input.value, this.current)) {
       this.finish("correct");
     } else {
@@ -112,11 +136,8 @@ export class Game {
     }
   }
 
-  private reveal(): void {
-    this.finish("revealed");
-  }
-
   private finish(kind: "correct" | "revealed"): void {
+    if (!this.current) return;
     this.done = true;
     this.refs.input.disabled = true;
     this.refs.submit.disabled = true;
@@ -131,9 +152,7 @@ export class Game {
         Object.assign(el("strong"), {
           textContent: `${this.t.answer}: ${this.current.answer}`,
         }),
-        Object.assign(el("span", "trace"), {
-          textContent: this.current.trace,
-        }),
+        Object.assign(el("span", "trace"), { textContent: this.current.trace }),
       );
     }
     this.renderControls();
@@ -149,10 +168,10 @@ export class Game {
     };
 
     const controls = this.done
-      ? [make(this.t.next, "btn--primary", () => this.newRound())]
+      ? [make(this.t.next, "btn--primary", () => void this.newRound())]
       : [
-          make(this.t.reveal, "btn--ghost", () => this.reveal()),
-          make(this.t.skip, "btn--ghost", () => this.newRound()),
+          make(this.t.reveal, "btn--ghost", () => this.finish("revealed")),
+          make(this.t.skip, "btn--ghost", () => void this.newRound()),
         ];
     this.refs.controls.replaceChildren(...controls);
   }

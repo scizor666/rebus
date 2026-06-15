@@ -173,4 +173,6 @@ body {
   75% { transform: translateX(6px); }
 }
 
+.loading { color: var(--muted); font-size: 20px; }
+
 .foot { text-align: center; color: var(--muted); font-size: 13px; }

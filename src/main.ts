@@ -1,5 +1,4 @@
-import { PuzzleSelector } from "./game/select.ts";
-import { seedPuzzles } from "./data/seedPuzzles.ts";
+import { PackSource } from "./game/packSource.ts";
 import { Game } from "./ui/app.ts";
 
 function ref<T extends HTMLElement>(id: string): T {
@@ -8,7 +7,7 @@ function ref<T extends HTMLElement>(id: string): T {
   return node as T;
 }
 
-new Game(new PuzzleSelector(seedPuzzles), {
+new Game(new PackSource(), {
   langToggle: ref("langToggle"),
   puzzle: ref("puzzle"),
   form: ref<HTMLFormElement>("answerForm"),
