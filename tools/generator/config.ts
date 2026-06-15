@@ -44,8 +44,8 @@ export const paths = {
 
 /** Output targets. */
 export const caps = {
-  imagePerLang: 1000, // 2000 image puzzles total
-  charPerLang: 5000, // 10000 char puzzles total
+  imagePerLang: 6000, // image puzzles are abundant & high-quality; take all we can
+  charPerLang: 5000, // char is the scarce pool under nouns-only + short
   shardSize: 500, // puzzles per shard file (lazy loading)
 };
 
