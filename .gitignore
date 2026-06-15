@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.log
+
+# Downloaded image assets are reproducible from the crawler; keep the repo light.
+# (The manifest in data/ IS committed; the binary SVGs are regenerated via `npm run crawl`.)
+public/assets/images/
+
+# Crawler caches
+tools/crawler/.cache/
