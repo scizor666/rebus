@@ -1,13 +1,17 @@
-import type { Puzzle, Token } from "../rebus/types.ts";
+import type { Glyph, Puzzle } from "../rebus/types.ts";
 
 /**
- * Hand-authored seed puzzles for M1 — enough to exercise every mechanic
- * (single image, sequence, apostrophe drop-letters, number-words, and all four
- * positional prepositions) across both languages. The bulk 12k set will be
- * machine-generated in M3; these validate the engine, renderer, and UI.
+ * Hand-authored seed puzzles for M1 — every entry is a real rebus that
+ * transforms or combines its parts (never "name the picture"):
+ *   - image + letters in sequence      (🌟 + T = star → START)
+ *   - apostrophe drop-letters          (🐻 bear − b = EAR)
+ *   - number-words                     (100 → сто, 7 → семь)
+ *   - letter-inside-letter → "в"       (О containing ДА → в-О-да = ВОДА)
+ *   - letter-over-letter → "на"        (КА over Л → КА-на-Л = КАНАЛ)
+ * The bulk 12k set is machine-generated in M3; these validate the engine.
  */
 
-const img = (id: string, alt: string, extra: Partial<Token> = {}): Token => ({
+const img = (id: string, alt: string, extra: Partial<Glyph> = {}): Glyph => ({
   kind: "image",
   assetId: id,
   file: `assets/images/openmoji/${id}.svg`,
@@ -15,22 +19,14 @@ const img = (id: string, alt: string, extra: Partial<Token> = {}): Token => ({
   ...extra,
 });
 
-const txt = (text: string, extra: Partial<Token> = {}): Token => ({
+const txt = (text: string, extra: Partial<Glyph> = {}): Glyph => ({
   kind: "text",
   text,
   ...extra,
 });
 
 export const seedPuzzles: Puzzle[] = [
-  // --- English: image + sequence ------------------------------------------
-  {
-    id: "en-lion",
-    lang: "en",
-    hasImages: true,
-    answer: "lion",
-    tokens: [img("1F981", "lion")],
-    trace: "🦁 = lion",
-  },
+  // --- English: image + letters --------------------------------------------
   {
     id: "en-plant",
     lang: "en",
@@ -99,14 +95,6 @@ export const seedPuzzles: Puzzle[] = [
 
   // --- Russian: image + apostrophe -----------------------------------------
   {
-    id: "ru-tigr",
-    lang: "ru",
-    hasImages: true,
-    answer: "тигр",
-    tokens: [img("1F405", "тигр")],
-    trace: "🐅 = тигр",
-  },
-  {
     id: "ru-rab",
     lang: "ru",
     hasImages: true,
@@ -141,37 +129,39 @@ export const seedPuzzles: Puzzle[] = [
     trace: "7 (семь) + Я = семья",
   },
 
-  // --- Russian: character-only (positional prepositions) -------------------
-  {
-    id: "ru-podval",
-    lang: "ru",
-    hasImages: false,
-    answer: "подвал",
-    tokens: [txt("ВАЛ", { position: "below" })],
-    trace: "ВАЛ под чертой → ПОД + ВАЛ = подвал",
-  },
-  {
-    id: "ru-naves",
-    lang: "ru",
-    hasImages: false,
-    answer: "навес",
-    tokens: [txt("ВЕС", { position: "above" })],
-    trace: "ВЕС наверху → НА + ВЕС = навес",
-  },
+  // --- Russian: letter-inside-letter → "в" ---------------------------------
   {
     id: "ru-voda",
     lang: "ru",
     hasImages: false,
     answer: "вода",
-    tokens: [txt("ОДА", { position: "inside" })],
-    trace: "ОДА в рамке → В + ОДА = вода",
+    tokens: [{ kind: "inside", outer: txt("О"), inner: txt("ДА") }],
+    trace: "в букве О написано ДА → в-О-да = вода",
   },
   {
-    id: "ru-zabor",
+    id: "ru-vor",
     lang: "ru",
     hasImages: false,
-    answer: "забор",
-    tokens: [txt("БОР", { position: "behind" })],
-    trace: "БОР за панелью → ЗА + БОР = забор",
+    answer: "вор",
+    tokens: [{ kind: "inside", outer: txt("О"), inner: txt("Р") }],
+    trace: "в букве О написано Р → в-О-р = вор",
+  },
+
+  // --- Russian: letter-over-letter → "на" ----------------------------------
+  {
+    id: "ru-kanal",
+    lang: "ru",
+    hasImages: false,
+    answer: "канал",
+    tokens: [{ kind: "stack", top: txt("КА"), bottom: txt("Л") }],
+    trace: "КА над Л, читается «КА на Л» → ка-на-л = канал",
+  },
+  {
+    id: "ru-banan",
+    lang: "ru",
+    hasImages: false,
+    answer: "банан",
+    tokens: [{ kind: "stack", top: txt("БА"), bottom: txt("Н") }],
+    trace: "БА над Н, читается «БА на Н» → ба-на-н = банан",
   },
 ];

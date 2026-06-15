@@ -106,24 +106,20 @@ body {
 .apos--start { margin-right: 2px; }
 .apos--end { margin-left: 2px; }
 
-/* positional frames */
-.frame { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; }
-.frame--inside {
-  border: 3px solid var(--accent);
-  border-radius: 12px;
-  padding: 10px 18px;
-}
-.frame .rule { height: 3px; width: 110%; background: var(--accent); border-radius: 2px; }
-.frame--behind { position: relative; flex-direction: row; padding-left: 14px; }
-.frame--behind .panel {
+/* letter-inside-letter ("в"): inner letters centered within the big outer letter */
+.inside { position: relative; display: inline-grid; place-items: center; }
+.inside .outer .token-text { font-size: 120px; color: var(--line); }
+.inside .inner {
   position: absolute;
-  left: 0; top: 12%;
-  width: 60%; height: 76%;
-  background: var(--panel-2);
-  border: 2px dashed var(--accent);
-  border-radius: 8px;
+  inset: 0;
+  display: grid;
+  place-items: center;
 }
-.frame--behind .token-core { position: relative; z-index: 1; }
+.inside .inner .token-text { font-size: 44px; color: var(--ink); }
+
+/* letter-over-letter ("на/над/под"): two groups stacked vertically */
+.stack { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
+.stack .token-text { font-size: 44px; }
 
 /* --- answer input -------------------------------------------------------- */
 .answer { display: flex; gap: 10px; }

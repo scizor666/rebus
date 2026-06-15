@@ -1,4 +1,4 @@
-import type { Puzzle, Token } from "../rebus/types.ts";
+import type { Glyph, Node, Puzzle } from "../rebus/types.ts";
 
 export function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -9,7 +9,24 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-/** Render the apostrophe (drop-letter) marks shown beside a token. */
+/** The image or text at the heart of a glyph. */
+function glyphCore(glyph: Glyph): HTMLElement {
+  const core = el("span", "token-core");
+  if (glyph.kind === "image" && glyph.file) {
+    const img = el("img", "token-img");
+    img.src = glyph.file.startsWith("/") ? glyph.file : `/${glyph.file}`;
+    img.alt = glyph.alt ?? "";
+    img.draggable = false;
+    core.appendChild(img);
+  } else {
+    const text = el("span", "token-text");
+    text.textContent = glyph.text ?? "";
+    core.appendChild(text);
+  }
+  return core;
+}
+
+/** Apostrophe (drop-letter) marks shown beside a glyph. */
 function apostrophes(count: number, side: "start" | "end"): HTMLElement {
   const marks = el("span", `apos apos--${side}`);
   marks.textContent = "’".repeat(count);
@@ -20,60 +37,41 @@ function apostrophes(count: number, side: "start" | "end"): HTMLElement {
   return marks;
 }
 
-/** The image or text glyph at the heart of a token. */
-function tokenCore(token: Token): HTMLElement {
-  const core = el("span", "token-core");
-  if (token.kind === "image" && token.file) {
-    const img = el("img", "token-img");
-    img.src = token.file.startsWith("/") ? token.file : `/${token.file}`;
-    img.alt = token.alt ?? "";
-    img.draggable = false;
-    core.appendChild(img);
-  } else {
-    const text = el("span", "token-text");
-    text.textContent = token.text ?? "";
-    core.appendChild(text);
-  }
-  return core;
-}
-
-/**
- * Wrap the core in a positional frame so the player can read the spatial clue:
- * a box (inside → "в/in"), a rule above/below (below/above → "под/на"), or a
- * panel (behind → "за"). "sequence" needs no frame.
- */
-function withPosition(core: HTMLElement, token: Token): HTMLElement {
-  const pos = token.position ?? "sequence";
-  if (pos === "sequence") return core;
-
-  const frame = el("span", `frame frame--${pos}`);
-  switch (pos) {
-    case "below":
-      frame.append(el("span", "rule"), core);
-      break;
-    case "above":
-      frame.append(core, el("span", "rule"));
-      break;
-    case "behind":
-      frame.append(el("span", "panel"), core);
-      break;
-    case "inside":
-    default:
-      frame.append(core);
-  }
-  return frame;
-}
-
-function renderToken(token: Token): HTMLElement {
+/** A standalone glyph, with any apostrophe marks. */
+function renderGlyph(glyph: Glyph): HTMLElement {
   const wrap = el("span", "token");
-  if (token.dropStart) wrap.appendChild(apostrophes(token.dropStart, "start"));
-  wrap.appendChild(withPosition(tokenCore(token), token));
-  if (token.dropEnd) wrap.appendChild(apostrophes(token.dropEnd, "end"));
+  if (glyph.dropStart) wrap.appendChild(apostrophes(glyph.dropStart, "start"));
+  wrap.appendChild(glyphCore(glyph));
+  if (glyph.dropEnd) wrap.appendChild(apostrophes(glyph.dropEnd, "end"));
   return wrap;
+}
+
+function renderNode(node: Node): HTMLElement {
+  switch (node.kind) {
+    case "inside": {
+      // Inner letters drawn within the container letter → "в / in".
+      const wrap = el("span", "token inside");
+      wrap.append(
+        Object.assign(glyphCore(node.outer), { className: "token-core outer" }),
+      );
+      const inner = el("span", "inner");
+      inner.appendChild(glyphCore(node.inner));
+      wrap.appendChild(inner);
+      return wrap;
+    }
+    case "stack": {
+      // One group above another → vertical preposition (на / над / под).
+      const wrap = el("span", "token stack");
+      wrap.append(glyphCore(node.top), glyphCore(node.bottom));
+      return wrap;
+    }
+    default:
+      return renderGlyph(node);
+  }
 }
 
 export function renderPuzzle(puzzle: Puzzle): HTMLElement {
   const row = el("div", "puzzle-row");
-  for (const token of puzzle.tokens) row.appendChild(renderToken(token));
+  for (const node of puzzle.tokens) row.appendChild(renderNode(node));
   return row;
 }
