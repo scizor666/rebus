@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0e1116"/>
+  <!-- Large dim О (container) -->
+  <text x="256" y="360" font-family="system-ui,-apple-system,sans-serif" font-size="330" font-weight="900" text-anchor="middle" fill="#3a4658">О</text>
+  <!-- Bright Cyrillic Р inside — вор -->
+  <text x="256" y="318" font-family="system-ui,-apple-system,sans-serif" font-size="150" font-weight="800" text-anchor="middle" fill="#6ea8fe">Р</text>
+</svg>

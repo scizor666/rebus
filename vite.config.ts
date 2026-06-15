@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icons/icon.svg"],
+      includeAssets: ["icons/icon.svg", "icons/icon-ru.svg"],
       manifest: {
         name: "Ребус · Rebus",
         short_name: "Rebus",

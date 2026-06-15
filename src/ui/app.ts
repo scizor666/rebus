@@ -162,6 +162,7 @@ export class Game {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") this.closeHelp();
     });
+    this.updateFavicon();
     void this.newRound();
   }
 
@@ -172,7 +173,15 @@ export class Game {
   private setLang(lang: Lang): void {
     if (lang === this.lang) return;
     this.lang = lang;
+    this.updateFavicon();
     void this.newRound(); // switching language loads a fresh puzzle immediately
+  }
+
+  private updateFavicon(): void {
+    const el = document.getElementById("faviconEl") as HTMLLinkElement | null;
+    if (!el) return;
+    const base = import.meta.env.BASE_URL;
+    el.href = this.lang === "ru" ? `${base}icons/icon-ru.svg` : `${base}icons/icon.svg`;
   }
 
   private async newRound(): Promise<void> {
