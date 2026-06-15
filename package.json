@@ -5,12 +5,16 @@
   "type": "module",
   "description": "Browser rebus game (Soviet-style image + character puzzles).",
   "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
     "crawl": "tsx tools/crawler/crawl.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"
   }
 }
