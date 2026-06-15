@@ -234,8 +234,17 @@ function symbolStrategy(word: string): PuzzleDraft | null {
 }
 
 // --- S3: letter-inside-letter "в" (RU char pool) ---------------------------
+/**
+ * Outer letters that visually enclose the inner letters (so it reads "в букве X
+ * написано …" = IN, not ON). Not every letter works — these have a clear
+ * enclosed area in uppercase.
+ */
+const CONTAINER = new Set(["о", "ю", "ф", "д", "б", "я"]);
+
 function insideStrategy(word: string): PuzzleDraft | null {
-  if (word[0] !== "в" || word.length < 3) return null;
+  // Short only: outer letter + at most 3 inner letters, so the inner fits.
+  if (word.length < 3 || word.length > 5) return null;
+  if (word[0] !== "в" || !CONTAINER.has(word[1]!)) return null;
   const outer = word[1]!;
   const inner = word.slice(2);
   return {
@@ -263,6 +272,7 @@ function stackStrategy(word: string): PuzzleDraft | null {
     const top = word.slice(0, i);
     const bottom = word.slice(i + prep.length);
     if (!bottom) continue; // need a non-empty bottom group
+    if (top.length > 4 || bottom.length > 4) continue; // keep groups small
     return {
       lang: "ru",
       hasImages: false,

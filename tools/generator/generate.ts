@@ -15,6 +15,7 @@ import { assemble } from "../../src/rebus/assemble.ts";
 import { normalize } from "../../src/rebus/normalize.ts";
 import { caps, paths, wordSources } from "./config.ts";
 import { loadWords } from "./wordlists.ts";
+import { loadNounSet } from "./nouns.ts";
 import { isGoodTarget } from "./filters.ts";
 import {
   buildReadingIndex,
@@ -65,9 +66,11 @@ async function generateLang(
   lang: Lang,
   manifest: Manifest,
 ): Promise<PoolMeta[]> {
-  const words = await loadWords(lang);
+  const [allWords, nouns] = await Promise.all([loadWords(lang), loadNounSet(lang)]);
+  // Keep only nouns (in frequency order) — clean, common, dictionary forms.
+  const words = allWords.filter((w) => nouns.has(w.word.replace(/ё/g, "е")));
   const index = buildReadingIndex(manifest, lang);
-  console.log(`  ${lang}: ${words.length} candidate words`);
+  console.log(`  ${lang}: ${words.length} noun candidates (of ${allWords.length})`);
 
   // image pool
   const imageDrafts: PuzzleDraft[] = [];

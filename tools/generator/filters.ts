@@ -75,9 +75,12 @@ const STOP: Record<Lang, Set<string>> = {
       "through just form much great think say help low line before turn cause same mean differ " +
       "move right boy old too does tell sentence set three want air well also play small end put " +
       "home read hand port large spell add even land here must big high such follow act why ask " +
-      "men change went light kind off need house picture try us again animal point mother world").split(
-      /\s+/,
-    ),
+      "men change went light kind off need house picture try us again animal point mother world " +
+      // pronouns / reflexives / gerunds that noun lists wrongly include as nouns
+      "someone everyone anyone everybody somebody anybody nobody noone something anything " +
+      "everything nothing yourself myself himself herself itself themselves ourselves yourselves " +
+      "going doing being having getting making coming looking nothing everywhere somewhere anywhere " +
+      "first second third").split(/\s+/),
   ),
   ru: new Set(
     ("я ты он она оно мы вы они что это как так вот вам вас нам нас его ее их мне тебе меня тебя " +

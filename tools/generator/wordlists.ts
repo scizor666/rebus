@@ -15,7 +15,7 @@ export interface RankedWord {
   rank: number;
 }
 
-async function fetchCached(url: string, cacheFile: string): Promise<string> {
+export async function fetchCached(url: string, cacheFile: string): Promise<string> {
   await mkdir(paths.cacheDir, { recursive: true });
   const path = join(paths.cacheDir, cacheFile);
   if (existsSync(path)) return readFile(path, "utf8");
