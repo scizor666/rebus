@@ -91,7 +91,7 @@ export function imageStrategy(
         hasImages: true,
         answer: word,
         tokens,
-        trace: imageTrace(prefix, entry, suffix, word),
+        trace: imageTrace(prefix, entry, suffix, word, lang),
       };
     }
   }
@@ -105,15 +105,22 @@ function dropOpts(entry: ReadingEntry): Partial<Glyph> {
   return o;
 }
 
+const DROP_SIDE: Record<Lang, { start: string; end: string }> = {
+  ru: { start: "спереди", end: "сзади" },
+  en: { start: "from start", end: "from end" },
+};
+
 function imageTrace(
   prefix: string,
   entry: ReadingEntry,
   suffix: string,
   word: string,
+  lang: Lang,
 ): string {
+  const side = DROP_SIDE[lang];
   const drops: string[] = [];
-  if (entry.ds) drops.push(`−${entry.ds} спереди`);
-  if (entry.de) drops.push(`−${entry.de} сзади`);
+  if (entry.ds) drops.push(`−${entry.ds} ${side.start}`);
+  if (entry.de) drops.push(`−${entry.de} ${side.end}`);
   const pic = `«${entry.word}»${drops.length ? ` (${drops.join(", ")})` : ""}`;
   const parts = [
     prefix && prefix.toUpperCase(),
