@@ -23,7 +23,7 @@ body {
 }
 
 #app {
-  min-height: 100%;
+  min-height: 100dvh;
   max-width: 720px;
   margin: 0 auto;
   padding: 20px 18px 32px;
@@ -94,32 +94,35 @@ body {
 /* --- tokens -------------------------------------------------------------- */
 .token { display: inline-flex; align-items: center; }
 .token-core { display: inline-flex; align-items: center; }
-.token-img { width: 92px; height: 92px; }
+.token-img {
+  width: clamp(64px, 20vw, 92px);
+  height: clamp(64px, 20vw, 92px);
+}
 .token-text {
   font-weight: 700;
-  font-size: 56px;
+  font-size: clamp(36px, 10vw, 56px);
   letter-spacing: 2px;
   color: var(--ink);
 }
 
-.apos { font-size: 40px; line-height: 1; color: var(--accent); font-weight: 700; }
+.apos { font-size: clamp(26px, 7vw, 40px); line-height: 1; color: var(--accent); font-weight: 700; }
 .apos--start { margin-right: 2px; }
 .apos--end { margin-left: 2px; }
 
 /* letter-inside-letter ("в"): inner letters centered within the big outer letter */
 .inside { position: relative; display: inline-grid; place-items: center; }
-.inside .outer .token-text { font-size: 120px; color: var(--line); }
+.inside .outer .token-text { font-size: clamp(80px, 22vw, 120px); color: var(--line); }
 .inside .inner {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
 }
-.inside .inner .token-text { font-size: 44px; color: var(--ink); }
+.inside .inner .token-text { font-size: clamp(30px, 8vw, 44px); color: var(--ink); }
 
 /* letter-over-letter ("на/над/под"): two groups stacked vertically */
 .stack { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
-.stack .token-text { font-size: 44px; }
+.stack .token-text { font-size: clamp(30px, 8vw, 44px); }
 
 /* --- answer input -------------------------------------------------------- */
 .answer { display: flex; gap: 10px; }
@@ -175,4 +178,10 @@ body {
 
 .loading { color: var(--muted); font-size: 20px; }
 
-.foot { text-align: center; color: var(--muted); font-size: 13px; }
+.foot { margin-top: auto; text-align: center; color: var(--muted); font-size: 13px; }
+
+/* --- mobile portrait ----------------------------------------------------- */
+@media (max-width: 520px) {
+  .answer { flex-direction: column; }
+  .answer .btn--primary { width: 100%; }
+}
