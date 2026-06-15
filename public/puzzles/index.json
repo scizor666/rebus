@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-06-15T03:23:43.978Z",
+  "sources": [
+    {
+      "lang": "ru",
+      "url": "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/ru/ru_50k.txt",
+      "license": "MIT (hermitdave/FrequencyWords)"
+    },
+    {
+      "lang": "en",
+      "url": "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_50k.txt",
+      "license": "MIT (hermitdave/FrequencyWords)"
+    }
+  ],
+  "pools": [
+    {
+      "lang": "ru",
+      "pool": "image",
+      "count": 4630,
+      "shardSize": 500,
+      "shards": [
+        "ru-image/000.json",
+        "ru-image/001.json",
+        "ru-image/002.json",
+        "ru-image/003.json",
+        "ru-image/004.json",
+        "ru-image/005.json",
+        "ru-image/006.json",
+        "ru-image/007.json",
+        "ru-image/008.json",
+        "ru-image/009.json"
+      ]
+    },
+    {
+      "lang": "ru",
+      "pool": "char",
+      "count": 230,
+      "shardSize": 500,
+      "shards": [
+        "ru-char/000.json"
+      ]
+    },
+    {
+      "lang": "en",
+      "pool": "image",
+      "count": 4356,
+      "shardSize": 500,
+      "shards": [
+        "en-image/000.json",
+        "en-image/001.json",
+        "en-image/002.json",
+        "en-image/003.json",
+        "en-image/004.json",
+        "en-image/005.json",
+        "en-image/006.json",
+        "en-image/007.json",
+        "en-image/008.json"
+      ]
+    },
+    {
+      "lang": "en",
+      "pool": "char",
+      "count": 413,
+      "shardSize": 500,
+      "shards": [
+        "en-char/000.json"
+      ]
+    }
+  ]
+}

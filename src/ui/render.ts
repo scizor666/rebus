@@ -14,7 +14,7 @@ function glyphCore(glyph: Glyph): HTMLElement {
   const core = el("span", "token-core");
   if (glyph.kind === "image" && glyph.file) {
     const img = el("img", "token-img");
-    img.src = glyph.file.startsWith("/") ? glyph.file : `/${glyph.file}`;
+    img.src = `${import.meta.env.BASE_URL}${glyph.file}`;
     img.alt = glyph.alt ?? "";
     img.draggable = false;
     core.appendChild(img);

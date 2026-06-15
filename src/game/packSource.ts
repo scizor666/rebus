@@ -15,7 +15,7 @@ interface PackIndex {
   pools: PoolMeta[];
 }
 
-const BASE = "/puzzles";
+const BASE = `${import.meta.env.BASE_URL}puzzles`;
 
 function randInt(n: number): number {
   return Math.floor(Math.random() * n);
