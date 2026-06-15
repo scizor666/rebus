@@ -46,6 +46,26 @@ body {
 }
 .logo .dot { color: var(--accent); margin: 0 6px; }
 
+.topbar-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  font: 700 15px/1 var(--font);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.help-btn:hover { background: var(--panel-2); color: var(--ink); }
+
 .lang-toggle {
   display: inline-flex;
   background: var(--panel);
@@ -64,6 +84,107 @@ body {
   transition: background 0.15s, color 0.15s;
 }
 .lang-btn.is-active { background: var(--accent); color: #0b1020; }
+
+/* --- help modal ---------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+.modal-overlay[hidden] { display: none; }
+
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 480px;
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.modal-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--ink); }
+
+.modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 18px 20px 24px;
+}
+
+/* rules content typography */
+.rules h3 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin: 20px 0 10px;
+}
+.rules h3:first-child { margin-top: 0; }
+.rules dl { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.rules dt {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+}
+.rules dd {
+  margin: 2px 0 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.rules dd em { color: var(--accent); font-style: normal; font-weight: 600; }
+.rules ul {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.rules ul em { color: var(--accent); font-style: normal; font-weight: 600; }
+.rules .example {
+  display: inline-block;
+  background: var(--panel-2);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--ink);
+}
 
 /* --- stage --------------------------------------------------------------- */
 .stage {

@@ -40,6 +40,87 @@ const STR: Record<Lang, Strings> = {
   },
 };
 
+const RULES: Record<Lang, { title: string; html: string }> = {
+  en: {
+    title: "How to play",
+    html: `<div class="rules">
+      <h3>Read the clues left to right and combine them</h3>
+      <dl>
+        <div>
+          <dt>🖼 Image</dt>
+          <dd>Read as the English word it depicts.</dd>
+        </div>
+        <div>
+          <dt>Letter (R, C, U, B, T…)</dt>
+          <dd>Read as its name: R = <em>are</em>, C = <em>sea</em>, U = <em>you</em>, B = <em>bee</em>, T = <em>tea</em>, K = <em>kay</em>…</dd>
+        </div>
+        <div>
+          <dt>Number (4, 8, 100…)</dt>
+          <dd>Read as its word: 4 = <em>four</em>, 8 = <em>eight</em>, 100 = <em>hundred</em>.</dd>
+        </div>
+        <div>
+          <dt>&amp; and @</dt>
+          <dd>&amp; = <em>and</em> · @ = <em>at</em></dd>
+        </div>
+      </dl>
+
+      <h3>Apostrophes — drop letters from the edge</h3>
+      <ul>
+        <li><span class="example">'🐱 (cat)</span> — drop 1 from start → <em>at</em></li>
+        <li><span class="example">🐱' (cat)</span> — drop 1 from end → <em>ca</em></li>
+        <li><span class="example">''🐱 (cat)</span> — drop 2 from start → <em>t</em></li>
+      </ul>
+
+      <h3>Controls</h3>
+      <ul>
+        <li><strong>Reveal</strong> — shows the answer and a step-by-step explanation.</li>
+        <li><strong>Skip</strong> — moves to the next puzzle silently.</li>
+        <li><strong>RU / EN</strong> — switch language at any time.</li>
+      </ul>
+    </div>`,
+  },
+  ru: {
+    title: "Как играть",
+    html: `<div class="rules">
+      <h3>Читайте подсказки слева направо и соединяйте</h3>
+      <dl>
+        <div>
+          <dt>🖼 Картинка</dt>
+          <dd>Читается как русское слово, которое изображено.</dd>
+        </div>
+        <div>
+          <dt>Цифра (4, 8, 100…)</dt>
+          <dd>Читается словом: 4 = <em>четыре</em>, 8 = <em>восемь</em>, 100 = <em>сто</em>.</dd>
+        </div>
+        <div>
+          <dt>Буква внутри буквы</dt>
+          <dd>Буквы, написанные внутри О, Ю, Ф, Д, Б или Я, читаются как «в».<br>
+          Пример: Р внутри О = <em>вор</em>.</dd>
+        </div>
+        <div>
+          <dt>Буква над буквой</dt>
+          <dd>Верхняя группа + предлог + нижняя группа.<br>
+          Пример: КА над Л = «КА <em>на</em> Л» = <em>канал</em>.</dd>
+        </div>
+      </dl>
+
+      <h3>Апострофы — убирают буквы с края</h3>
+      <ul>
+        <li><span class="example">'🐱 (кот)</span> — убрать 1 с начала → <em>от</em></li>
+        <li><span class="example">🐱' (кот)</span> — убрать 1 с конца → <em>ко</em></li>
+        <li><span class="example">''🐱 (кот)</span> — убрать 2 с начала → <em>т</em></li>
+      </ul>
+
+      <h3>Управление</h3>
+      <ul>
+        <li><strong>Показать</strong> — открыть ответ и пошаговое объяснение.</li>
+        <li><strong>Пропустить</strong> — перейти к следующему ребусу.</li>
+        <li><strong>RU / EN</strong> — переключить язык в любой момент.</li>
+      </ul>
+    </div>`,
+  },
+};
+
 interface Refs {
   langToggle: HTMLElement;
   puzzle: HTMLElement;
@@ -48,6 +129,11 @@ interface Refs {
   submit: HTMLButtonElement;
   feedback: HTMLElement;
   controls: HTMLElement;
+  helpBtn: HTMLButtonElement;
+  helpModal: HTMLElement;
+  helpTitle: HTMLElement;
+  helpBody: HTMLElement;
+  helpClose: HTMLButtonElement;
 }
 
 export class Game {
@@ -67,6 +153,14 @@ export class Game {
     refs.langToggle.addEventListener("click", (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-lang]");
       if (btn) this.setLang(btn.dataset.lang as Lang);
+    });
+    refs.helpBtn.addEventListener("click", () => this.openHelp());
+    refs.helpClose.addEventListener("click", () => this.closeHelp());
+    refs.helpModal.addEventListener("click", (e) => {
+      if (e.target === refs.helpModal) this.closeHelp();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") this.closeHelp();
     });
     void this.newRound();
   }
@@ -156,6 +250,19 @@ export class Game {
       );
     }
     this.renderControls();
+  }
+
+  private openHelp(): void {
+    const rules = RULES[this.lang];
+    this.refs.helpTitle.textContent = rules.title;
+    this.refs.helpBody.innerHTML = rules.html;
+    this.refs.helpModal.removeAttribute("hidden");
+    this.refs.helpClose.focus();
+  }
+
+  private closeHelp(): void {
+    this.refs.helpModal.setAttribute("hidden", "");
+    this.refs.helpBtn.focus();
   }
 
   private renderControls(): void {

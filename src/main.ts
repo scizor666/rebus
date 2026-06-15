@@ -15,4 +15,9 @@ new Game(new PackSource(), {
   submit: ref<HTMLButtonElement>("submitBtn"),
   feedback: ref("feedback"),
   controls: ref("controls"),
+  helpBtn: ref<HTMLButtonElement>("helpBtn"),
+  helpModal: ref("helpModal"),
+  helpTitle: ref("helpTitle"),
+  helpBody: ref("helpBody"),
+  helpClose: ref<HTMLButtonElement>("helpClose"),
 });

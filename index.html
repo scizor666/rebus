@@ -14,9 +14,12 @@
     <div id="app">
       <header class="topbar">
         <h1 class="logo">Ребус<span class="dot">·</span>Rebus</h1>
-        <div class="lang-toggle" id="langToggle" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-lang="ru">RU</button>
-          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        <div class="topbar-end">
+          <button type="button" class="help-btn" id="helpBtn" aria-label="Rules">?</button>
+          <div class="lang-toggle" id="langToggle" role="group" aria-label="Language">
+            <button type="button" class="lang-btn" data-lang="ru">RU</button>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+          </div>
         </div>
       </header>
 
@@ -42,6 +45,16 @@
       </main>
 
       <footer class="foot">No score · no timer · solve, reveal, or skip — forever</footer>
+    </div>
+
+    <div class="modal-overlay" id="helpModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+        <div class="modal-head">
+          <span class="modal-title" id="helpTitle"></span>
+          <button type="button" class="modal-close" id="helpClose" aria-label="Close">&#x2715;</button>
+        </div>
+        <div class="modal-body" id="helpBody"></div>
+      </div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>
