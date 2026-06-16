@@ -136,8 +136,15 @@ interface Refs {
   helpClose: HTMLButtonElement;
 }
 
+const LANG_KEY = "rebus:lang";
+
+function savedLang(): Lang {
+  const v = localStorage.getItem(LANG_KEY);
+  return v === "en" || v === "ru" ? v : "ru";
+}
+
 export class Game {
-  private lang: Lang = "ru";
+  private lang: Lang = savedLang();
   private current?: Puzzle;
   private done = false; // solved or revealed → input locked
   private roundToken = 0; // guards against out-of-order async loads
@@ -173,6 +180,7 @@ export class Game {
   private setLang(lang: Lang): void {
     if (lang === this.lang) return;
     this.lang = lang;
+    localStorage.setItem(LANG_KEY, lang);
     this.updateFavicon();
     void this.newRound(); // switching language loads a fresh puzzle immediately
   }
